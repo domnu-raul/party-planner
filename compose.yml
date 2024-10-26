@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  server:
+    build:
+      context: ./server
+    container_name: fastapi_server
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://root:example@mongo:27017
+    volumes:
+      - ./server:/app  # Updated to match the WORKDIR in your Dockerfile
+    command: "uvicorn src.main:app --host=0.0.0.0 --port=8000 --reload"
+    ports:
+      - "8000:8000"
+
+  client:
+    build:
+      context: ./client
+    container_name: nextjs_client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server 
+    environment:
+      NEXT_PUBLIC_API_URL: http://fastapi_server:8000
+    volumes:
+      - ./client:/app 
