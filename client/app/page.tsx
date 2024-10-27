@@ -1,12 +1,19 @@
-"use client"
+"use client";
 import FormInput from './ui/FormInput';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Home() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [isRegister, setIsRegister] = useState(true);
+
+  useEffect(() => {
+    const accessToken = document.cookie.split('; ').find(row => row.startsWith('access_token='));
+    if (accessToken) {
+      window.location.href = '/home'; 
+    }
+  }, []); 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -22,12 +29,17 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', 
         body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Success:", data);
+          if (!isRegister) {
+            window.location.href = '/home';
+          }
+          else {
+              setIsRegister(false);
+          }
       } else {
         const errorData = await response.json();
         console.error("Error:", errorData);

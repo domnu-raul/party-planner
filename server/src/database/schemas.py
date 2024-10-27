@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from uuid import UUID
 from pydantic import BaseModel, Field, EmailStr
 
@@ -48,4 +48,10 @@ class EventCreate(BaseModel):
 
 class Event(EventCreate):
     owner: str
-    attendees: List[str] = []
+    attendees: List[Tuple[str, str]] = []
+
+
+class AttendEventRequest(BaseModel):
+    service: Optional[str] = None
+    wish_list_item: Optional[Tuple[str, int]] = None
+    fee_payment: Optional[int] = None

@@ -1,4 +1,3 @@
-from fastapi.middleware import Middleware
 from fastapi import Request, HTTPException
 from src.database import get_db, crud, schemas
 from datetime import datetime, timedelta

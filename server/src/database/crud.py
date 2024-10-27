@@ -1,4 +1,5 @@
 from src.database import get_db, schemas
+from bson.objectid import ObjectId
 
 
 async def get_user(username_or_email: str):
@@ -11,6 +12,13 @@ async def get_user(username_or_email: str):
         ]
     })
 
+    return db_user
+
+
+async def get_user_by_id(user_id: str):
+    db = get_db()
+
+    db_user = await db["users"].find_one({"_id": ObjectId(user_id)})
     return db_user
 
 
